@@ -1,0 +1,7 @@
+import { getAdminReports, adminDeleteListing } from '@/app/actions/marketplace'
+
+export default async function AdminPage() {
+  let reports
+  try { reports = await getAdminReports() } catch { return <main dir="rtl" className="grid min-h-screen place-items-center bg-[#f7f8f5] p-6"><div className="rounded-3xl bg-white p-8 text-center shadow-sm"><h1 className="text-2xl font-black">غير مصرح بالدخول</h1><p className="mt-2 text-sm text-slate-500">هذه الصفحة مخصصة للمشرفين فقط.</p></div></main> }
+  return <main dir="rtl" className="min-h-screen bg-[#f7f8f5] p-6 text-[#182b2a]"><div className="mx-auto max-w-5xl"><h1 className="text-3xl font-black">إدارة البلاغات</h1><p className="mt-2 text-sm text-slate-500">راجع الإعلانات المبلغ عنها واتخذ الإجراء المناسب.</p><div className="mt-6 grid gap-4">{reports.length ? reports.map(({ report, listing, reporter }) => <article key={report.id} className="rounded-3xl bg-white p-5 shadow-sm"><div className="flex items-start justify-between gap-4"><div><h2 className="font-black">{listing?.title || 'إعلان محذوف'}</h2><p className="mt-2 text-sm text-slate-500">البلاغ: {report.reason} · المبلغ: {reporter || 'مستخدم'}</p></div>{listing && <form action={async () => { 'use server'; await adminDeleteListing(listing.id) }}><button className="rounded-xl bg-red-600 px-4 py-2 text-sm font-black text-white">حذف الإعلان</button></form>}</div></article>) : <div className="rounded-3xl bg-white p-8 text-center font-bold text-slate-500">لا توجد بلاغات مفتوحة.</div>}</div></div></main>
+}
